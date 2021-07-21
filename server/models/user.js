@@ -37,7 +37,7 @@ const UserSchema = mongoose.Schema({
 })
 
 UserSchema.pre('save', function(next) {
-  let user = this
+  var user = this
   if (user.isModified('password')) {
 
     bcrypt.genSalt(10, function(error, salt) {
@@ -53,6 +53,17 @@ UserSchema.pre('save', function(next) {
     next()
   }
 })
+
+UserSchema.methods.generateToken = async function() {
+  var user = this
+  var token = jwt.sign(
+    {email:user.email},
+    process.env.SECRET, 
+    {expiresIn:'7d'}
+  )
+  user.token = token;
+  return user.save()  
+}
 
 const User = mongoose.model('User', UserSchema)
 
