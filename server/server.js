@@ -13,7 +13,14 @@ async function startApolloServer() {
     resolvers:{
         Query,
         Mutation
-    } 
+    },
+    context:({ req }) => {
+
+      const token = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGZhMjg3NzZmMTk3YzM4ZWUyNDgxNDQiLCJlbWFpbCI6ImFyaXlhQGVtYWlsLmNvbSIsImlhdCI6MTYyNzAwNzA5NSwiZXhwIjoxNjI3NjExODk1fQ.vOEgiKoPTdrOy8Ngj9FYElpyxbIqE-HQldJPkRoKog4`
+      req.headers.authorization = token
+
+      return { req }
+    }
   });
 
   await server.start();

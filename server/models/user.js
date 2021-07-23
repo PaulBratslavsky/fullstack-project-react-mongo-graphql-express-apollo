@@ -35,6 +35,7 @@ const UserSchema = mongoose.Schema({
   },
 });
 
+// hash password
 UserSchema.pre("save", function (next) {
   var user = this;
   if (user.isModified("password")) {
@@ -60,7 +61,7 @@ UserSchema.methods.checkPassword = async function (candidatePassword) {
 
 UserSchema.methods.generateToken = async function () {
   var user = this;
-  var token = jwt.sign({ email: user.email }, process.env.SECRET, {
+  var token = jwt.sign({_id: user._id, email: user.email }, process.env.SECRET, {
     expiresIn: "7d",
   });
   user.token = token;

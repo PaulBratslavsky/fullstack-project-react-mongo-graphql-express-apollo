@@ -1,10 +1,7 @@
 const { User } = require("../../models/user");
-const {
-  UserInputError,
-  AuthenticationError,
-  ApolloError,
-} = require("apollo-server-express");
-
+const { AuthenticationError } = require("apollo-server-express");
+const isAuthorized = require("../../utils/isAuthorized");
+const isOwner = require("../../utils/isOwner");
 module.exports = {
   Mutation: {
     signUp: async (parent, args, context, info) => {
@@ -48,13 +45,41 @@ module.exports = {
       }
 
       return {
-        _id:user._id,
-        firstName:user.firstName,
-        lastName:user.lastName,
-        email:user.email,
-        token:user.token,
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        token: user.token,
       };
+    },
 
+    updateUserProfile: async (parent, args, context, info) => {
+      try {
+        const req = isAuthorized(context.req);
+
+        if (!isOwner(req, args.userId)) {
+          throw new AuthenticationError("Not authorized");
+        }
+
+        /* TODO: add backend validation when getting data from the front end */
+
+        const user = await User.findOneAndUpdate(
+          { _id: args.userId },
+          {
+            $set: {
+              firstName: args.firstName,
+              lastName: args.lastName,
+            },
+          },
+          {
+            new: true,
+          }
+        );
+
+        return user;
+      } catch (error) {
+        throw error;
+      }
     },
   },
 };
