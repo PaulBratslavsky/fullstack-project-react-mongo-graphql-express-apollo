@@ -1,4 +1,6 @@
 const { User } = require("../../models/user");
+const { Post } = require("../../models/post");
+
 const { AuthenticationError, ApolloError } = require("apollo-server-express");
 const isAuthorized = require("../../utils/isAuthorized");
 const isOwner = require("../../utils/isOwner");
@@ -84,22 +86,19 @@ module.exports = {
     },
 
     updateUserLogin: async (parent, args, context, info) => {
-      console.log("FUCKKKKKKKKKKK 1 ")
       try {
         const req = isAuthorized(context.req);
-        console.log("FUCKKKKKKKKKKK 1 ")
 
         if (!isOwner(req, args.userId)) {
           throw new AuthenticationError("Not authorized");
         }
-        console.log("FUCKKKKKKKKKKK 2 ")
 
         const user = await User.findOne({ _id: args.userId });
 
         if (!user) {
           throw new AuthenticationError("Not authorized");
         }
-        console.log("FUCKKKKKKKKKKK 3 ")
+
         if (args.email) {
           user.email = args.email;
         }
@@ -120,5 +119,29 @@ module.exports = {
         throw new ApolloError("Server Error")
       }
     },
+
+    createPost: async (parent, args, context, info) => {
+      const { title, excerpt, content, status } = args.fields;
+      try {
+        const req = isAuthorized(context.req)
+
+        console.log(req._id)
+
+        const post = new Post({
+          title: title,
+          excerpt: excerpt,
+          content: content,
+          author: req._id,
+          status: status,
+          created_at: new Date()
+        })
+
+        const result = await post.save()
+        return { ...result._doc }
+
+      } catch (error) {
+        throw new ApolloError("Failed to create post")
+      }
+    }
   },
 };
