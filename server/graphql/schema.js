@@ -10,6 +10,7 @@ const typeDefs = gql`
     signUp(fields: AuthInput!): User!
     signIn(fields: AuthInput!): User!
     updateUserProfile(firstName: String!, lastName: String!, userId: ID!): User!
+    updateUserLogin(email: String, password: String, userId: ID!): User!
   }
 
   type User {

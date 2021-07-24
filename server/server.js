@@ -27,7 +27,7 @@ async function startApolloServer() {
   const app = express();
   server.applyMiddleware({ app });
 
-  const PORT = process.env.PORT || 4000
+  const PORT = process.env.PORT || 5000
   
   try {
     await mongose.connect(`mongodb+srv://CodingAdminThirty:kl453j6kl456j534m@cluster0.z8xy6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,{

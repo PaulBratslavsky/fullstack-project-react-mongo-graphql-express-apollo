@@ -1,7 +1,8 @@
 const { User } = require("../../models/user");
-const { AuthenticationError } = require("apollo-server-express");
+const { AuthenticationError, ApolloError } = require("apollo-server-express");
 const isAuthorized = require("../../utils/isAuthorized");
 const isOwner = require("../../utils/isOwner");
+
 module.exports = {
   Mutation: {
     signUp: async (parent, args, context, info) => {
@@ -79,6 +80,44 @@ module.exports = {
         return user;
       } catch (error) {
         throw error;
+      }
+    },
+
+    updateUserLogin: async (parent, args, context, info) => {
+      console.log("FUCKKKKKKKKKKK 1 ")
+      try {
+        const req = isAuthorized(context.req);
+        console.log("FUCKKKKKKKKKKK 1 ")
+
+        if (!isOwner(req, args.userId)) {
+          throw new AuthenticationError("Not authorized");
+        }
+        console.log("FUCKKKKKKKKKKK 2 ")
+
+        const user = await User.findOne({ _id: args.userId });
+
+        if (!user) {
+          throw new AuthenticationError("Not authorized");
+        }
+        console.log("FUCKKKKKKKKKKK 3 ")
+        if (args.email) {
+          user.email = args.email;
+        }
+
+        if (args.password) {
+          user.password = args.password;
+        }
+
+        const token = await user.generateToken();
+
+        if (!token) {
+          throw new AuthenticationError("Not authorized");
+        }
+
+        return { ...token._doc, token: token.token }
+
+      } catch (error) {
+        throw new ApolloError("Server Error")
       }
     },
   },
