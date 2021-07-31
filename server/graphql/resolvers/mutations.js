@@ -1,5 +1,7 @@
 const { User } = require("../../models/user");
 const { Post } = require("../../models/post");
+const { Category } = require("../../models/category");
+
 
 const { AuthenticationError, ApolloError } = require("apollo-server-express");
 const isAuthorized = require("../../utils/isAuthorized");
@@ -121,11 +123,9 @@ module.exports = {
     },
 
     createPost: async (parent, args, context, info) => {
-      const { title, excerpt, content, status } = args.fields;
+      const { title, excerpt, content, status, category } = args.fields;
       try {
         const req = isAuthorized(context.req)
-
-        console.log(req._id)
 
         const post = new Post({
           title: title,
@@ -133,10 +133,32 @@ module.exports = {
           content: content,
           author: req._id,
           status: status,
+          category: category,
           created_at: new Date()
         })
 
         const result = await post.save()
+        return { ...result._doc }
+
+      } catch (error) {
+        console.log(error)
+
+        throw new ApolloError("Failed to create post")
+      }
+    },
+
+    createCategory: async (parent, args, context, info) => {
+      try {
+        const req = isAuthorized(context.req)
+
+        console.log(req._id, args.name, "WHJAJTAJ")
+
+        const category = new Category({
+          author: req._id,
+          name: args.name
+        })
+
+        const result = await category.save()
         return { ...result._doc }
 
       } catch (error) {

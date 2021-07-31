@@ -4,7 +4,8 @@ const mongose =  require('mongoose');
 const typeDefs = require('./graphql/schema');
 const { Query } = require('./graphql/resolvers/queries');
 const { Mutation } = require('./graphql/resolvers/mutations');
-
+const { User } = require('./graphql/resolvers/user');
+const { Post } = require('./graphql/resolvers/post');
 
 async function startApolloServer() {
   
@@ -12,11 +13,11 @@ async function startApolloServer() {
     typeDefs,
     resolvers:{
         Query,
-        Mutation
+        Mutation,
+        User
     },
     context:({ req }) => {
-
-      const token = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGZhMjg3NzZmMTk3YzM4ZWUyNDgxNDQiLCJlbWFpbCI6ImFyaXlhQGVtYWlsLmNvbSIsImlhdCI6MTYyNzAwNzA5NSwiZXhwIjoxNjI3NjExODk1fQ.vOEgiKoPTdrOy8Ngj9FYElpyxbIqE-HQldJPkRoKog4`
+      const token = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTA0ZjhhM2RiNzM3OTNiMTEwNjc0NGQiLCJlbWFpbCI6InRlc3R1c2VyQGVtYWlsLmNvbSIsImlhdCI6MTYyNzcxNTc0NywiZXhwIjoxNjI4MzIwNTQ3fQ.OYF-5QhxqypE9RsmPr6J_AW-50GkoieIDsjLr8xxtJ8`
       req.headers.authorization = token
 
       return { req }

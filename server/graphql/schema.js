@@ -5,7 +5,8 @@ const typeDefs = gql`
     user(userId: ID!): User!
     isAuth: User!
     post(postId: ID!): Post!
-    posts:[Post]!
+    posts: [Post]!
+    category: [Category]!
   }
 
   type Mutation {
@@ -13,9 +14,11 @@ const typeDefs = gql`
     signIn(fields: AuthInput!): User!
     updateUserProfile(firstName: String!, lastName: String!, userId: ID!): User!
     updateUserLogin(email: String, password: String, userId: ID!): User!
-    
+
     createPost(fields: PostInput!): Post!
     updatePost(fields: PostInput!): Post!
+
+    createCategory(name: String!): Category!
   }
 
   type User {
@@ -25,6 +28,8 @@ const typeDefs = gql`
     firstName: String
     lastName: String
     token: String
+    posts: [Post!]!
+    categories: [Category!]!
   }
 
   input AuthInput {
@@ -37,24 +42,32 @@ const typeDefs = gql`
     title: String!
     excerpt: String!
     content: String!
-    author: User!
     status: PostStatus
     created_at: String
     updated_at: String
-  },
+    author: User!
+    category: Category!
+  }
 
   input PostInput {
     title: String
     excerpt: String
     content: String
     status: PostStatus
+    category: ID
   }
 
   enum PostStatus {
     DRAFT
     PUBLISHED
   }
-  
+
+  type Category {
+    _id: ID!
+    name: String!
+    author: User!
+    posts: [Post]
+  }
 `;
 
 module.exports = typeDefs;
