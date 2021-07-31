@@ -37,6 +37,13 @@ const typeDefs = gql`
     password: String!
   }
 
+  type Category {
+    _id: ID!
+    name: String!
+    author: User!
+    posts: [Post]
+  }
+
   type Post {
     _id: ID!
     title: String!
@@ -46,7 +53,6 @@ const typeDefs = gql`
     created_at: String
     updated_at: String
     author: User!
-    category: Category!
   }
 
   input PostInput {
@@ -62,12 +68,7 @@ const typeDefs = gql`
     PUBLISHED
   }
 
-  type Category {
-    _id: ID!
-    name: String!
-    author: User!
-    posts: [Post]
-  }
+ 
 `;
 
 module.exports = typeDefs;
