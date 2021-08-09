@@ -1,4 +1,5 @@
 const { User } = require("../../models/user");
+const { Category } = require("../../models/category");
 const isAuthorized = require("../../utils/isAuthorized.js");
 const {
   UserInputError,
@@ -37,5 +38,19 @@ module.exports = {
         };
       } catch (error) {}
     },
+    categories: async (parent, { categoryID }, context, info) => {
+      try {
+        let query = {};
+
+        if (categoryID) query["_id"] = categoryID;
+
+        const categories = await Category.find(query);
+        return categories;
+      } catch (error) {
+        throw error;
+      }
+
+    }
+
   },
 };

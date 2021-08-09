@@ -7,6 +7,7 @@ const typeDefs = gql`
     post(postId: ID!): Post!
     posts: [Post]!
     category: [Category]!
+    categories(categoryID: ID): [Category]!
   }
 
   type Mutation {
@@ -53,6 +54,7 @@ const typeDefs = gql`
     created_at: String
     updated_at: String
     author: User!
+    category: Category!
   }
 
   input PostInput {
